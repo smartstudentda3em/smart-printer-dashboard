@@ -89,7 +89,7 @@ function ProductsPage() {
   function openEdit(p: Product) {
     setForm({
       title: p.title,
-      description: p.description,
+      description: p.description ?? "",
       price: String(p.price),
       is_featured: p.is_featured,
       image: null,
@@ -108,7 +108,7 @@ function ProductsPage() {
     mutationFn: async (payload: { id?: number; form: FormState }) => {
       const fd = new FormData();
       fd.append("title", payload.form.title);
-      fd.append("description", payload.form.description);
+      fd.append("description", payload.form.description.trim());
       fd.append("price", payload.form.price.trim() === "" ? "0" : payload.form.price);
       fd.append("is_featured", payload.form.is_featured ? "1" : "0");
       if (payload.form.image) fd.append("image", payload.form.image);
@@ -144,8 +144,7 @@ function ProductsPage() {
     e.preventDefault();
     const errors: Record<string, string[]> = {};
     if (!form.title.trim()) errors.title = ["Title is required."];
-    if (!form.description.trim()) errors.description = ["Description is required."];
-    
+
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       return;
@@ -191,7 +190,9 @@ function ProductsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.map((p) => (
+              {products.map((p) => {
+                const descriptionText = p.description?.trim() ?? "";
+                return (
                 <TableRow key={p.id}>
                   <TableCell>
                     <img
@@ -206,7 +207,7 @@ function ProductsPage() {
                   <TableCell>
                     <div className="font-medium">{p.title}</div>
                     <div className="line-clamp-1 max-w-md text-xs text-muted-foreground">
-                      {p.description}
+                      {descriptionText}
                     </div>
                   </TableCell>
                   <TableCell>{p.price}</TableCell>
@@ -234,7 +235,8 @@ function ProductsPage() {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+                );
+              })}
             </TableBody>
           </Table>
         )}
@@ -287,7 +289,9 @@ function ProductsPage() {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">
+                Description <span className="text-xs text-muted-foreground">(optional)</span>
+              </Label>
               <Textarea
                 id="description"
                 rows={3}
