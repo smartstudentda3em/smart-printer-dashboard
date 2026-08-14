@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-bzQ4Vb5N.js";import{o as t}from"./index-B_iCvJmm.js";import{a as n}from"./api-Bss036yz.js";var r=e();function i(){return(0,r.jsx)(t,{to:n()?`/products`:`/login`,replace:!0})}export{i as component};
